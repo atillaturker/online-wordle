@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "257440840716",
+    "project_id": "online-wordle-8c404",
+    "storage_bucket": "online-wordle-8c404.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:257440840716:android:ab9e10330a114d67754229",
+        "android_client_info": {
+          "package_name": "com.atillaturker.online_wordle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE8duh1YJWnjgneGouGkJcAgRtPTqT8FU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
