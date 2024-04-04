@@ -1,27 +1,29 @@
 import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
+import { Button, Title } from "react-native-paper";
 
-import logo from "../../assets/WordleLogo.png"; // Logo dosyanızın yolunu buraya ekleyin
+// Replace this with your actual logo image
+import logo from "../../assets/WordleLogo.png";
 
 export const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image source={logo} style={styles.logo} />
-      <Text style={styles.title}>Hoş Geldiniz!</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("SignIn")}
-        >
-          <Text style={styles.buttonText}>Giriş Yap</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate("Register")}
-        >
-          <Text style={styles.buttonText}>Kayıt Ol</Text>
-        </TouchableOpacity>
-      </View>
+      <Title style={styles.title}>Welcome!</Title>
+      <Button
+        mode="contained"
+        onPress={() => navigation.navigate("SignIn")}
+        style={styles.button}
+      >
+        Sign In
+      </Button>
+      <Button
+        mode="outlined"
+        onPress={() => navigation.navigate("Register")}
+        style={styles.button}
+      >
+        Register
+      </Button>
     </View>
   );
 };
@@ -29,33 +31,22 @@ export const WelcomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
   },
   logo: {
-    width: 400,
-    height: 100,
+    width: 350,
+    height: 200,
     marginBottom: 20,
   },
   title: {
-    fontSize: 88,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 30,
-  },
-  buttonContainer: {
-    flexDirection: "row",
+    marginBottom: 20,
   },
   button: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginHorizontal: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    textAlign: "center",
+    marginTop: 10,
+    width: 200,
   },
 });

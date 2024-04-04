@@ -1,51 +1,45 @@
-import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
+import { Button, TextInput, Title } from "react-native-paper";
 
-export const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+export const RegisterScreen = () => {
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState("");
 
   const handleRegister = () => {
-    // Kayıt olma işlemleri burada gerçekleştirilecek
-    console.log("Kayıt olma işlemi: ", email, password);
+    // Kayıt işlemleri burada gerçekleştirilebilir
+    console.log("Username:", username);
+    console.log("Password:", password);
+    console.log("Email:", email);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hesap Oluştur</Text>
-
+      <Title style={styles.title}>Hesap Oluştur</Title>
       <TextInput
+        label="Kullanıcı Adı"
+        value={username}
+        onChangeText={setUsername}
         style={styles.input}
-        placeholder="E-posta"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
       />
       <TextInput
-        style={styles.input}
-        placeholder="Şifre"
-        secureTextEntry
+        label="Şifre"
         value={password}
         onChangeText={setPassword}
+        secureTextEntry
+        style={styles.input}
       />
       <TextInput
+        label="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
         style={styles.input}
-        placeholder="Şifreyi Onayla"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
       />
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Hesap Oluştur</Text>
-      </TouchableOpacity>
+      <Button mode="contained" onPress={handleRegister} style={styles.button}>
+        Kayıt Ol
+      </Button>
     </View>
   );
 };
@@ -53,34 +47,17 @@ export const Register = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
+    padding: 20,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
     marginBottom: 20,
+    textAlign: "center",
   },
   input: {
-    width: 250,
-    height: 40,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
     marginBottom: 10,
-    paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    textAlign: "center",
+    marginTop: 10,
   },
 });
