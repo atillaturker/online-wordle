@@ -4,6 +4,7 @@ import { Button, Title } from "react-native-paper";
 
 // Replace this with your actual logo image
 import logo from "../../assets/WordleLogo.png";
+import { SCREENS } from "../navigation";
 
 export const WelcomeScreen = ({ navigation }) => {
   return (
@@ -12,14 +13,14 @@ export const WelcomeScreen = ({ navigation }) => {
       <Title style={styles.title}>Welcome!</Title>
       <Button
         mode="contained"
-        onPress={() => navigation.navigate("SignIn")}
+        onPress={() => navigation.navigate(SCREENS.signin)}
         style={styles.button}
       >
         Sign In
       </Button>
       <Button
         mode="outlined"
-        onPress={() => navigation.navigate("Register")}
+        onPress={() => navigation.navigate(SCREENS.register)}
         style={styles.button}
       >
         Register
