@@ -1,15 +1,29 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
 
+import { FIREBASE_AUTH } from "../../firebaseConfig";
+
 export const SignIn = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState("false");
 
-  const handleSignIn = () => {
-    // Burada giriş işlemini gerçekleştirin (örneğin Firebase Authentication kullanarak)
-    console.log("Kullanıcı adı:", username);
-    console.log("Şifre:", password);
+  const auth = FIREBASE_AUTH;
+  const handleSignIn = async () => {
+    try {
+      const response = await signInWithEmailAndPassword(
+        auth,
+        username,
+        password
+      );
+      console.log("Kullanıcı adi", username, "Sifre", password, "Giris yaptı");
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,6 +42,16 @@ export const SignIn = () => {
         secureTextEntry
         style={styles.input}
       />
+
+      {/* {loading ? (
+        <ActivityIndicator size="large" color="0000ff" />
+      ) : (
+        <>
+          <Button mode="contained" onPress={handleSignIn} style={styles.button}>
+            Giriş Yap
+          </Button>
+        </>
+      )} */}
       <Button mode="contained" onPress={handleSignIn} style={styles.button}>
         Giriş Yap
       </Button>

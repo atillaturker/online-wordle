@@ -1,17 +1,30 @@
-import React from "react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
 
-export const RegisterScreen = () => {
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [email, setEmail] = React.useState("");
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 
-  const handleRegister = () => {
-    // Kayıt işlemleri burada gerçekleştirilebilir
-    console.log("Username:", username);
-    console.log("Password:", password);
-    console.log("Email:", email);
+export const RegisterScreen = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState("false");
+
+  const auth = FIREBASE_AUTH;
+  const handleRegister = async () => {
+    try {
+      const response = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log("Kullanıcı adi", username, "Sifre", password, "Giris yaptı");
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -24,19 +37,32 @@ export const RegisterScreen = () => {
         style={styles.input}
       />
       <TextInput
-        label="Şifre"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={styles.input}
-      />
-      <TextInput
         label="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         style={styles.input}
       />
+      <TextInput
+        label="Şifre"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        style={styles.input}
+      />
+      {/* {loading ? (
+        <ActivityIndicator size="large" color="0000ff" />
+      ) : (
+        <>
+          <Button
+            mode="contained"
+            onPress={handleRegister}
+            style={styles.button}
+          >
+            Kayıt Ol
+          </Button>
+        </>
+      )} */}
       <Button mode="contained" onPress={handleRegister} style={styles.button}>
         Kayıt Ol
       </Button>
