@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { atom } from "jotai";
 import { StyleSheet, Text, View } from "react-native";
 
-import { Navigation } from "./src";
+import { RootNavigation } from "./src";
 
 export const isLoggedInAtom = atom(false);
 
@@ -10,7 +10,7 @@ export default function App() {
   console.log("deneme12312321");
   return (
     <View style={styles.container}>
-      <Navigation />
+      <RootNavigation />
       <Text>Hello</Text>
       <StatusBar style="auto" />
     </View>
