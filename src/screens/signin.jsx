@@ -1,15 +1,32 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useAtom } from "jotai";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
+import { isLoggedInAtom } from "../../App";
+import { FIREBASE_AUTH } from "../../firebaseConfig";
 
-export const SignIn = () => {
+export const SignInScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
 
-  const handleSignIn = () => {
-    // Burada giriş işlemini gerçekleştirin (örneğin Firebase Authentication kullanarak)
-    console.log("Kullanıcı adı:", username);
-    console.log("Şifre:", password);
+  const auth = FIREBASE_AUTH;
+  const handleSignIn = async () => {
+    try {
+      const response = await signInWithEmailAndPassword(
+        auth,
+        username,
+        password
+      );
+      console.log("Kullanıcı adi", username, "Sifre", password, "Giris yaptı");
+      setIsLoggedIn(true); // Update isLoggedIn state upon successful sign-in
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,6 +45,16 @@ export const SignIn = () => {
         secureTextEntry
         style={styles.input}
       />
+
+      {/* {loading ? (
+        <ActivityIndicator size="large" color="0000ff" />
+      ) : (
+        <>
+          <Button mode="contained" onPress={handleSignIn} style={styles.button}>
+            Giriş Yap
+          </Button>
+        </>
+      )} */}
       <Button mode="contained" onPress={handleSignIn} style={styles.button}>
         Giriş Yap
       </Button>
@@ -54,5 +81,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
-export default SignIn;
