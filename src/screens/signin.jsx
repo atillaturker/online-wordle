@@ -2,60 +2,86 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAtom } from "jotai";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
+import { useMMKVStorage } from "react-native-mmkv-storage";
 import { Button, TextInput, Title } from "react-native-paper";
-import { isLoggedInAtom } from "../../App";
+
+import { isLoggedInAtom, storage } from "../../App";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 
 export const SignInScreen = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+    loading: false,
+  });
+  const [_, setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const [user, setUser] = useMMKVStorage("user", storage, {
+    username: "",
+    password: "",
+  });
+  const { username, password } = {
+    username: user.username || form.username,
+    password: user.password || form.password,
+  };
 
-  const auth = FIREBASE_AUTH;
+  const resetSoftLogin = () => {
+    setUser({ username: "", password: "" });
+  };
   const handleSignIn = async () => {
+    setForm((prev) => ({ ...prev, loading: true }));
+
     try {
-      const response = await signInWithEmailAndPassword(
-        auth,
+      const { user } = await signInWithEmailAndPassword(
+        FIREBASE_AUTH,
         username,
         password
       );
-      console.log("Kullanıcı adi", username, "Sifre", password, "Giris yaptı");
-      setIsLoggedIn(true); // Update isLoggedIn state upon successful sign-in
+      if (user) {
+        setIsLoggedIn(true); // Update isLoggedIn state upon successful sign-in
+        setUser({ username, password });
+      } else {
+        resetSoftLogin();
+      }
     } catch (error) {
       console.log("error", error);
+      resetSoftLogin();
     } finally {
-      setLoading(false);
+      setForm((prev) => ({ ...prev, loading: false }));
     }
   };
 
   return (
     <View style={styles.container}>
       <Title style={styles.title}>Giriş Yap</Title>
-      <TextInput
-        label="Kullanıcı Adı"
-        value={username}
-        onChangeText={setUsername}
-        style={styles.input}
-      />
-      <TextInput
-        label="Şifre"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={styles.input}
-      />
-
-      {/* {loading ? (
-        <ActivityIndicator size="large" color="0000ff" />
-      ) : (
+      {!user.username && (
         <>
-          <Button mode="contained" onPress={handleSignIn} style={styles.button}>
-            Giriş Yap
-          </Button>
+          <TextInput
+            label="Kullanıcı Adı"
+            value={username}
+            onChangeText={(text) => {
+              setForm((prev) => ({ ...prev, username: text }));
+            }}
+            style={styles.input}
+          />
+          <TextInput
+            label="Şifre"
+            value={password}
+            onChangeText={(text) => {
+              setForm((prev) => ({ ...prev, password: text }));
+            }}
+            secureTextEntry
+            style={styles.input}
+          />
         </>
-      )} */}
-      <Button mode="contained" onPress={handleSignIn} style={styles.button}>
+      )}
+
+      <Button
+        mode="contained"
+        disabled={!username || !password || form.loading}
+        onPress={handleSignIn}
+        style={styles.button}
+        loading={form.loading}
+      >
         Giriş Yap
       </Button>
     </View>
