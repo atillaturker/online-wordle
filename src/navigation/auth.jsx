@@ -1,19 +1,35 @@
-import { NavigationContainer } from "@react-navigation/native";
-
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
 import * as React from "react";
-import { Homepage } from "../screens";
-import { SCREENS } from "./config";
+
+import {
+  LobbyNavigation,
+  RoomsNavigation,
+  SettingsNavigation,
+} from "./auth/index";
+import { STACKS } from "./config";
 
 const Tab = createBottomTabNavigator();
 
-export const Auth = () => {
+export const AuthNavigation = () => {
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name={SCREENS.homepage} component={Homepage} />
-        <Tab.Screen name="2.ekran" component={Homepage} />
-        <Tab.Screen name="3.ekran" component={Homepage} />
+      <Tab.Navigator screenOptions={{ headerShown: false }}>
+        <Tab.Screen
+          options={{ title: "Lobby" }}
+          name={STACKS.looby}
+          component={LobbyNavigation}
+        />
+        <Tab.Screen
+          options={{ title: "Rooms" }}
+          name={STACKS.rooms}
+          component={RoomsNavigation}
+        />
+        <Tab.Screen
+          options={{ title: "Settings" }}
+          name={STACKS.settings}
+          component={SettingsNavigation}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

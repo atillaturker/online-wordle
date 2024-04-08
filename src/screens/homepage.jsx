@@ -4,7 +4,7 @@ import { Text, View } from "react-native";
 import { DataTable } from "react-native-paper";
 import { FIREBASE_DATABASE } from "../../firebaseConfig";
 
-export const Homepage = () => {
+export const HomePageScreen = () => {
   const [rooms, setRooms] = useState([]);
   useEffect(() => {
     const starCountRef = ref(FIREBASE_DATABASE);
