@@ -1,17 +1,16 @@
 import { StatusBar } from "expo-status-bar";
 import { atom } from "jotai";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { MMKVLoader } from "react-native-mmkv-storage";
 
 import { RootNavigation } from "./src";
 
 export const isLoggedInAtom = atom(false);
-
+export const storage = new MMKVLoader().initialize();
 export default function App() {
-  console.log("deneme12312321");
   return (
     <View style={styles.container}>
       <RootNavigation />
-      <Text>Hello</Text>
       <StatusBar style="auto" />
     </View>
   );
