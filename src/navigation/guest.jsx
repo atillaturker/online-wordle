@@ -9,7 +9,7 @@ import { SCREENS } from "./config";
 
 const Stack = createNativeStackNavigator();
 
-export const Guest = () => {
+export const GuestNavigation = () => {
   const [user, _] = useMMKVStorage("user", storage, {
     username: "",
     password: "",
