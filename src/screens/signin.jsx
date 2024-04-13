@@ -37,7 +37,8 @@ export const SignInScreen = () => {
         password
       );
       if (user) {
-        setIsLoggedIn(true); // Update isLoggedIn state upon successful sign-in
+        setIsLoggedIn(true);
+        console.log(user); // Update isLoggedIn state upon successful sign-in
         setUser({ username, password });
       } else {
         resetSoftLogin();

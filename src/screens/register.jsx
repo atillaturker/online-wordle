@@ -1,27 +1,48 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
 
+import uuid from "react-native-uuid";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { SCREENS } from "../navigation";
 
-export const RegisterScreen = () => {
+export const RegisterScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState("false");
+  const [_, setLoading] = useState(false);
 
   const auth = FIREBASE_AUTH;
   const handleRegister = async () => {
+    const userData = {
+      userId: uuid.v4(),
+      name: username,
+      email: email,
+      password: password,
+    };
+
     try {
       const response = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      console.log("Kullanıcı adi", username, "Sifre", password, "Giris yaptı");
+
+      console.log("Kullanıcı adi", username, "Sifre", password, "Kayıt oldu.");
+      Alert.alert("Kayıt Başarılı", "Giriş sayfasına yönlendiriliyorsunuz", [
+        {
+          text: "OK",
+          onPress: () => navigation.navigate(SCREENS.signin),
+        },
+      ]);
+
+      const db = getDatabase();
+      set(ref(db, "users/" + userData.userId), userData);
     } catch (error) {
       console.log("error", error);
+      Alert.alert(`Hata:${error} Lütfen tekrar deneyiniz. `);
     } finally {
       setLoading(false);
     }
@@ -50,19 +71,6 @@ export const RegisterScreen = () => {
         secureTextEntry
         style={styles.input}
       />
-      {/* {loading ? (
-        <ActivityIndicator size="large" color="0000ff" />
-      ) : (
-        <>
-          <Button
-            mode="contained"
-            onPress={handleRegister}
-            style={styles.button}
-          >
-            Kayıt Ol
-          </Button>
-        </>
-      )} */}
       <Button mode="contained" onPress={handleRegister} style={styles.button}>
         Kayıt Ol
       </Button>

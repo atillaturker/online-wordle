@@ -18,4 +18,5 @@ export const STACKS = {
   looby: "Lobby",
   rooms: "Rooms",
   settings: "Settings",
+  channel: "ChannelSelectionScreen",
 };
