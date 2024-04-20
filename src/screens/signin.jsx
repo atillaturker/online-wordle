@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useMMKVStorage } from "react-native-mmkv-storage";
@@ -14,7 +14,7 @@ export const SignInScreen = () => {
     password: "",
     loading: false,
   });
-  const [_, setIsLoggedIn] = useAtom(isLoggedInAtom);
+  const setIsLoggedIn = useSetAtom(isLoggedInAtom);
   const [user, setUser] = useMMKVStorage("user", storage, {
     username: "",
     password: "",
@@ -38,7 +38,7 @@ export const SignInScreen = () => {
       );
       if (user) {
         setIsLoggedIn(true);
-        console.log(user); // Update isLoggedIn state upon successful sign-in
+        console.log("asdasdas", user); // Update isLoggedIn state upon successful sign-in
         setUser({ username, password });
       } else {
         resetSoftLogin();

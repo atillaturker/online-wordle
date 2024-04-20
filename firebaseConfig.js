@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+import { getDatabase, ref } from "firebase/database";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -16,6 +16,7 @@ const firebaseConfig = {
 export const FIREBASE_APP = initializeApp(firebaseConfig);
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
 export const FIREBASE_DATABASE = getDatabase(FIREBASE_APP);
+export const GET_DB_REF = (path) => ref(FIREBASE_DATABASE, path);
 
 // For more information on how to access Firebase in your project,
 // see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
