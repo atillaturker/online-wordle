@@ -1,4 +1,5 @@
 export * from "./channelSelection";
+export * from "./game";
 export * from "./homepage";
 export * from "./looby";
 export * from "./numberSelection";

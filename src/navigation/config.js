@@ -8,6 +8,7 @@ export const SCREENS = {
   settings2: "Settings2",
   channel: "ChannelSelection",
   number: "NumberSelection",
+  game: "Game",
 };
 
 export const STACKS = {

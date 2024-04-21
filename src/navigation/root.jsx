@@ -8,7 +8,5 @@ import { GuestNavigation } from "./guest";
 export const RootNavigation = () => {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
 
-  console.log("IsLoading:", isLoggedIn);
-
   return isLoggedIn ? <AuthNavigation /> : <GuestNavigation />;
 };
