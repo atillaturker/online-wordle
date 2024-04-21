@@ -16,9 +16,7 @@ export const GuestNavigation = () => {
   });
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName={user.username ? SCREENS.signin : SCREENS.welcome}
-      >
+      <Stack.Navigator>
         <Stack.Screen name={SCREENS.welcome} component={WelcomeScreen} />
         <Stack.Screen name={SCREENS.register} component={RegisterScreen} />
         <Stack.Screen name={SCREENS.signin} component={SignInScreen} />

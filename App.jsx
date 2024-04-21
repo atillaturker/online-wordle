@@ -6,6 +6,8 @@ import { MMKVLoader } from "react-native-mmkv-storage";
 import { RootNavigation } from "./src";
 
 export const isLoggedInAtom = atom(false);
+export const modeConfigAtom = atom("");
+export const numberConfigAtom = atom("");
 export const storage = new MMKVLoader().initialize();
 export default function App() {
   return (
