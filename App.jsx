@@ -8,6 +8,8 @@ import { RootNavigation } from "./src";
 export const isLoggedInAtom = atom(false);
 export const modeConfigAtom = atom("");
 export const numberConfigAtom = atom("");
+export const inputAtom = atom([]);
+
 export const storage = new MMKVLoader().initialize();
 export default function App() {
   return (

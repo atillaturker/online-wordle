@@ -3,6 +3,7 @@ import * as React from "react";
 
 import {
   ChannelSelectionScreen,
+  GameScreen,
   LobbyScreen,
   NumberSelectionScreen,
 } from "../../screens";
@@ -29,6 +30,12 @@ export const LobbyNavigation = () => {
       <lobbyStack.Screen
         name={SCREENS.lobby}
         component={LobbyScreen} // Render the ChannelSelectionScreen component
+        options={{ headerShown: true }} // Optional: Hide the header for this screen
+      />
+
+      <lobbyStack.Screen
+        name={SCREENS.game}
+        component={GameScreen} // Render the ChannelSelectionScreen component
         options={{ headerShown: true }} // Optional: Hide the header for this screen
       />
     </lobbyStack.Navigator>
