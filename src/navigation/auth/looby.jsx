@@ -7,7 +7,6 @@ import {
   LobbyScreen,
   NumberSelectionScreen,
 } from "../../screens";
-
 import { SCREENS } from "../config";
 
 const lobbyStack = createNativeStackNavigator();
@@ -18,25 +17,25 @@ export const LobbyNavigation = () => {
       <lobbyStack.Screen
         name={SCREENS.channel}
         component={ChannelSelectionScreen} // Render the ChannelSelectionScreen component
-        options={{ headerShown: true }} // Optional: Hide the header for this screen
+        options={{ headerShown: true, title: "Mod Seçimi" }} // Optional: Hide the header for this screen
       />
 
       <lobbyStack.Screen
         name={SCREENS.number}
         component={NumberSelectionScreen} // Render the ChannelSelectionScreen component
-        options={{ headerShown: true }} // Optional: Hide the header for this screen
+        options={{ headerShown: true, title: "Harf Sayısı Seçimi" }} // Optional: Hide the header for this screen
       />
 
       <lobbyStack.Screen
         name={SCREENS.lobby}
         component={LobbyScreen} // Render the ChannelSelectionScreen component
-        options={{ headerShown: true }} // Optional: Hide the header for this screen
+        options={{ headerShown: true, title: "Lobi" }} // Optional: Hide the header for this screen
       />
 
       <lobbyStack.Screen
         name={SCREENS.game}
         component={GameScreen} // Render the ChannelSelectionScreen component
-        options={{ headerShown: true }} // Optional: Hide the header for this screen
+        options={{ headerShown: true, title: "Wordle" }} // Optional: Hide the header for this screen
       />
     </lobbyStack.Navigator>
   );

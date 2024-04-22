@@ -2,8 +2,9 @@ import { useNavigation } from "@react-navigation/native";
 import { onDisconnect, onValue, remove, set } from "firebase/database";
 import { atom, useAtomValue } from "jotai";
 import React, { useCallback, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Button, DataTable } from "react-native-paper";
+import { ScrollView, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, Button, DataTable } from "react-native-paper";
+
 import { modeConfigAtom, numberConfigAtom } from "../../App";
 import { FIREBASE_AUTH, GET_DB_REF } from "../../firebaseConfig";
 import { SCREENS } from "../navigation";
@@ -54,43 +55,58 @@ export const LobbyScreen = () => {
   }, []);
 
   return (
-    <View>
-      <Text style={styles.title}>Welcome from lobby screen</Text>
-      <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>Status</DataTable.Title>
-          <DataTable.Title>Email</DataTable.Title>
-          <DataTable.Title>Uid</DataTable.Title>
-          <DataTable.Title>Oyun</DataTable.Title>
-        </DataTable.Header>
-
-        {lobby.map((item) => (
-          <DataTable.Row key={item.key}>
-            <DataTable.Cell>Online</DataTable.Cell>
-            <DataTable.Cell>{item.email}</DataTable.Cell>
-            <DataTable.Cell>{item.uid}</DataTable.Cell>
-            <DataTable.Cell>
-              <Button
-                mode="elevated"
-                onPress={() => {
-                  navigation.navigate(SCREENS.game);
-                }}
-              >
-                Game Screen
-              </Button>
-            </DataTable.Cell>
-          </DataTable.Row>
-        ))}
-      </DataTable>
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>{`${mode} kelime\n${number} harf`}</Text>
+      {!!lobby?.length && (
+        <Text style={styles.status}>{`${lobby?.length} aktif kullanıcı`}</Text>
+      )}
+      {lobby?.length ? (
+        <DataTable style={styles.tableContainer}>
+          <DataTable.Header>
+            <DataTable.Title>Email</DataTable.Title>
+            <DataTable.Title>Davet</DataTable.Title>
+          </DataTable.Header>
+          {lobby.map((item) => (
+            <DataTable.Row key={item.uid}>
+              <DataTable.Cell>s</DataTable.Cell>
+              <DataTable.Cell>{item.email}</DataTable.Cell>
+              <DataTable.Cell>
+                <Button
+                  mode="elevated"
+                  onPress={() => {
+                    navigation.navigate(SCREENS.game);
+                  }}
+                >
+                  Davet Gönder
+                </Button>
+              </DataTable.Cell>
+            </DataTable.Row>
+          ))}
+        </DataTable>
+      ) : (
+        <ActivityIndicator size="large" />
+      )}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
+  },
+  status: {
+    fontSize: 36,
+    fontWeight: "bold",
+  },
+  tableContainer: {
+    paddingTop: 32,
   },
 });

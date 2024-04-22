@@ -1,14 +1,17 @@
+import { useNavigation } from "@react-navigation/native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useSetAtom } from "jotai";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 import { useMMKVStorage } from "react-native-mmkv-storage";
 import { Button, TextInput, Title } from "react-native-paper";
 
 import { isLoggedInAtom, storage } from "../../App";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
+import { SCREENS } from "../navigation";
 
 export const SignInScreen = () => {
+  const { navigate } = useNavigation();
   const [form, setForm] = useState({
     username: "",
     password: "",
@@ -43,20 +46,26 @@ export const SignInScreen = () => {
         resetSoftLogin();
       }
     } catch (error) {
-      console.log("error", error);
+      Alert.alert("Hata", error);
       resetSoftLogin();
     } finally {
       setForm((prev) => ({ ...prev, loading: false }));
     }
   };
 
+  const handleRegister = () => navigate(SCREENS.register);
+
   return (
     <View style={styles.container}>
-      <Title style={styles.title}>Giriş Yap</Title>
+      <Title style={styles.title}>
+        {!user.username
+          ? `Giriş Yap`
+          : `Hesabını bulduk.\nHızlıca giriş yapabilirsin`}
+      </Title>
       {!user.username && (
         <>
           <TextInput
-            label="Kullanıcı Adı"
+            label="E-Mail"
             value={username}
             onChangeText={(text) => {
               setForm((prev) => ({ ...prev, username: text }));
@@ -72,6 +81,13 @@ export const SignInScreen = () => {
             secureTextEntry
             style={styles.input}
           />
+          <Button
+            mode="contained"
+            onPress={handleRegister}
+            style={styles.button}
+          >
+            Hesabın yok mu? Tıkla ve kayıt ol
+          </Button>
         </>
       )}
 

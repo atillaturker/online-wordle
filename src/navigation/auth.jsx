@@ -12,12 +12,12 @@ export const AuthNavigation = () => {
     <NavigationContainer>
       <Tab.Navigator screenOptions={{ headerShown: false }}>
         <Tab.Screen
-          options={{ title: "Lobby" }}
+          options={{ title: "Lobi" }}
           name={STACKS.looby}
           component={LobbyNavigation}
         />
         <Tab.Screen
-          options={{ title: "Settings" }}
+          options={{ title: "Ayarlar" }}
           name={STACKS.settings}
           component={SettingsNavigation}
         />
