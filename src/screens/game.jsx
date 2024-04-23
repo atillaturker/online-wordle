@@ -14,9 +14,7 @@ import { SCREENS } from "../navigation";
 export const GameScreen = () => {
   const isFocused = useIsFocused();
   const { navigate } = useNavigation();
-  const [{ mode, length, to, from, path, word }, setGame] = useAtom(
-    GlobalState.game
-  );
+  const [{ length, to, from, path, word }, setGame] = useAtom(GlobalState.game);
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
   const [countDown, setCountDown] = useState(0);
   const countDownRef = useRef();
