@@ -6,7 +6,7 @@ import { Alert, StyleSheet, View } from "react-native";
 import { useMMKVStorage } from "react-native-mmkv-storage";
 import { Button, TextInput, Title } from "react-native-paper";
 
-import { isLoggedInAtom, storage } from "../../App";
+import { GlobalState, storage } from "../../App";
 import { FIREBASE_AUTH } from "../../firebaseConfig";
 import { SCREENS } from "../navigation";
 
@@ -17,7 +17,7 @@ export const SignInScreen = () => {
     password: "",
     loading: false,
   });
-  const setIsLoggedIn = useSetAtom(isLoggedInAtom);
+  const setIsLoggedIn = useSetAtom(GlobalState.isLoaggedIn);
   const [user, setUser] = useMMKVStorage("user", storage, {
     username: "",
     password: "",

@@ -9,6 +9,9 @@ export const SCREENS = {
   channel: "ChannelSelection",
   number: "NumberSelection",
   game: "Game",
+  invite: "Invite",
+  word: "Word",
+  result: "Result",
 };
 
 export const STACKS = {
@@ -17,4 +20,5 @@ export const STACKS = {
   root: "Root",
   looby: "Lobby",
   settings: "Settings",
+  game: "GAME",
 };

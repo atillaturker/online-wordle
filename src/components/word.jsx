@@ -1,39 +1,53 @@
-import { useAtom, useAtomValue } from "jotai";
-import React, { useEffect, useRef } from "react";
-import { StyleSheet, View } from "react-native";
+import { onValue } from "firebase/database";
+import { useAtomValue } from "jotai";
+import React, { useEffect, useRef, useState } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
-import { inputAtom } from "../../App";
-import { letterAtom } from "../screens";
 
-export const Word = ({ count, disabled, entered }) => {
-  const letter = useAtomValue(letterAtom);
-  const [input, setInput] = useAtom(inputAtom);
+import { GlobalState } from "../../App";
+import { FIREBASE_AUTH, GET_DB_REF } from "../../firebaseConfig";
+
+export const Word = ({ disabled, entered, setInput, order }) => {
+  const { length, path, word } = useAtomValue(GlobalState.game);
   const inputRefs = useRef([]);
+  const userUID = FIREBASE_AUTH?.currentUser?.uid;
+  const [words, setWords] = useState([]);
+
+  const getWords = () => {
+    const wordRef = GET_DB_REF(`${path}/${userUID}/input/${order}`);
+    try {
+      onValue(wordRef, (data) => {
+        if (data.exists()) {
+          setWords(data.val());
+        }
+      });
+    } catch (e) {
+      console.log("Harfleri çekerken problem:", e);
+    }
+  };
 
   useEffect(() => {
-    setInput(Array(count).fill(""));
+    getWords();
   }, []);
 
   const handleTextChange = (text, index) => {
     text = text.toUpperCase();
-    // Girilen değeri kontrol edin
+    setInput((prev) => {
+      const tmp = prev;
+      tmp[index] = text;
+      return tmp;
+    });
     if (text.length === 1 && index < inputRefs.current.length - 1) {
-      // Eğer bir karakter girildiyse ve sonuncu hücrede değilsek, bir sonraki hücreye geçin
       inputRefs.current[index + 1].focus();
     }
-    setInput((prev) => {
-      const newState = [...prev];
-      newState[index] = text;
-      return newState;
-    });
   };
 
-  const boxes = Array.from({ length: count }, (_, index) => {
+  const renderItem = ({ _, index }) => {
     const correntInputStyle = {
-      backgroundColor: input[index] === letter[index] ? "green" : "white",
+      backgroundColor: words[index] === word[index] ? "green" : "white",
     };
     return (
-      <View key={index} style={styles.box}>
+      <View style={styles.box}>
         <TextInput
           style={[styles.textInput, entered && correntInputStyle]}
           disabled={disabled}
@@ -44,9 +58,19 @@ export const Word = ({ count, disabled, entered }) => {
         />
       </View>
     );
-  });
+  };
 
-  return <View style={styles.container}>{boxes}</View>;
+  return (
+    <View style={styles.container}>
+      {word && (
+        <FlatList
+          data={Array.from({ length })}
+          renderItem={renderItem}
+          horizontal
+        />
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

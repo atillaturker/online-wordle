@@ -3,11 +3,11 @@ import * as React from "react";
 
 import {
   ChannelSelectionScreen,
-  GameScreen,
   LobbyScreen,
   NumberSelectionScreen,
 } from "../../screens";
-import { SCREENS } from "../config";
+import { SCREENS, STACKS } from "../config";
+import { GameNavigation } from "./game";
 
 const lobbyStack = createNativeStackNavigator();
 
@@ -33,9 +33,9 @@ export const LobbyNavigation = () => {
       />
 
       <lobbyStack.Screen
-        name={SCREENS.game}
-        component={GameScreen} // Render the ChannelSelectionScreen component
-        options={{ headerShown: true, title: "Wordle" }} // Optional: Hide the header for this screen
+        name={STACKS.game}
+        component={GameNavigation} // Render the ChannelSelectionScreen component
+        options={{ headerShown: false }} // Optional: Hide the header for this screen
       />
     </lobbyStack.Navigator>
   );

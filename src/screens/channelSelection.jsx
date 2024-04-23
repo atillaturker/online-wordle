@@ -3,16 +3,16 @@ import { useSetAtom } from "jotai";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { modeConfigAtom } from "../../App";
+import { GlobalState } from "../../App";
 import { MODES } from "../const";
 import { SCREENS } from "../navigation";
 
 export const ChannelSelectionScreen = () => {
-  const setModConfig = useSetAtom(modeConfigAtom);
+  const setGame = useSetAtom(GlobalState.game);
   const { navigate } = useNavigation();
 
   const handleMode = (mode) => {
-    setModConfig(mode);
+    setGame((prev) => ({ ...prev, mode }));
     navigate(SCREENS.number);
   };
 
@@ -60,11 +60,10 @@ const styles = StyleSheet.create({
     paddingTop: 48,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 16,
+    justifyContent: "space-between",
   },
   button: {
-    flex: 1,
+    width: "45%",
     height: 160,
     alignItems: "center",
     justifyContent: "center",
