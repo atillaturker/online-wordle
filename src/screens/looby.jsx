@@ -107,7 +107,6 @@ export const LobbyScreen = () => {
                 .then(() => {
                   const gameRef = GET_DB_REF(`${rootRef}/games/`);
                   const randomWord = getRandomWord(length);
-                  setGame((prev) => ({ ...prev, randomWord }));
                   update(gameRef, {
                     [`${receivedInvite?.to}`]: {
                       [`${receivedInvite.to}`]: {

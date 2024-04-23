@@ -18,13 +18,20 @@ export const GameScreen = () => {
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
   const [countDown, setCountDown] = useState(0);
   const countDownRef = useRef();
-
   const [step, setStep] = useState(0);
   const [input, setInput] = useState(Array.from({ length }).fill(""));
   const [result, setResult] = useState("playing");
 
   const opponentUID = userUID === to ? from : to;
 
+  const getWord = () => {
+    const wordPath = GET_DB_REF(`${path}/${userUID}/word`);
+    onValue(wordPath, (data) => {
+      if (data.exists()) {
+        setGame((prev) => ({ ...prev, word: data.val() }));
+      }
+    });
+  };
   const handleLose = () => {
     const gameRef = GET_DB_REF(`${path}`);
     update(gameRef, {
@@ -72,6 +79,7 @@ export const GameScreen = () => {
     if (isFocused) {
       checkWin();
       checkLost();
+      getWord();
     }
   }, []);
 

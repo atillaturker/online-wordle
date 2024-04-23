@@ -13,10 +13,8 @@ export const ResultScreen = () => {
   const navigation = useNavigation();
   const [steps, setSteps] = useState();
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
-  const [{ mode, length, to, from, path, word, result }, setGame] = useAtom(
-    GlobalState.game
-  );
-  const setIsLoggedIn = useSetAtom(GlobalState.isLoggedIn);
+  const [{ to, from, path, word, result }, setGame] = useAtom(GlobalState.game);
+
   const setInvite = useSetAtom(GlobalState.invite);
   const [isGameFinished, setIsGameFinished] = useState(false);
 
