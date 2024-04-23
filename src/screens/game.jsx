@@ -1,4 +1,4 @@
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { onValue, update } from "firebase/database";
 import { useAtom } from "jotai";
 import React, { useEffect, useRef, useState } from "react";
@@ -12,9 +12,9 @@ import { Word } from "../components/word";
 import { SCREENS } from "../navigation";
 
 export const GameScreen = () => {
-  const isFocused = useIsFocused();
   const { navigate } = useNavigation();
-  const [{ length, to, from, path, word }, setGame] = useAtom(GlobalState.game);
+  const [game, setGame] = useAtom(GlobalState.game);
+  const { length, to, from, path, word } = game;
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
   const [countDown, setCountDown] = useState(0);
   const countDownRef = useRef();
@@ -25,9 +25,11 @@ export const GameScreen = () => {
   const opponentUID = userUID === to ? from : to;
 
   const getWord = () => {
+    console.log("tekrar calisti");
     const wordPath = GET_DB_REF(`${path}/${userUID}/word`);
     onValue(wordPath, (data) => {
       if (data.exists()) {
+        console.log("data ne =", data.val());
         setGame((prev) => ({ ...prev, word: data.val() }));
       }
     });
@@ -76,31 +78,25 @@ export const GameScreen = () => {
   };
 
   useEffect(() => {
-    if (isFocused) {
-      checkWin();
-      checkLost();
-      getWord();
-    }
+    checkWin();
+    checkLost();
+    getWord();
   }, []);
 
   useEffect(() => {
-    if (isFocused) {
-      countDownRef.current = setInterval(() => {
-        setCountDown((prev) => prev + 1);
-      }, 1000);
+    countDownRef.current = setInterval(() => {
+      setCountDown((prev) => prev + 1);
+    }, 1000);
 
-      return () => {
-        clearInterval(countDownRef.current);
-      };
-    }
+    return () => {
+      clearInterval(countDownRef.current);
+    };
   }, []);
 
   useEffect(() => {
-    if (isFocused) {
-      if (countDown === 60) {
-        clearInterval(countDownRef.current);
-        handleLose();
-      }
+    if (countDown === 60) {
+      clearInterval(countDownRef.current);
+      handleLose();
     }
   }, [countDown]);
 
