@@ -3,7 +3,7 @@ import { onValue, update } from "firebase/database";
 import { useAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { ActivityIndicator, Button, TextInput } from "react-native-paper";
 
 import { GlobalState } from "../../App";
 import { FIREBASE_AUTH, GET_DB_REF } from "../../firebaseConfig";
@@ -14,10 +14,12 @@ export const WordScreen = () => {
   const [input, setInput] = useState("");
   const [{ length, to, from, path }, setGame] = useAtom(GlobalState.game);
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
+  const [isEntered, setIsEntered] = useState(false);
   const [isReady, setIsReady] = useState(false);
 
   const onPressHandleWordInput = () => {
     if (input) {
+      setIsEntered(true);
       const gameRef = GET_DB_REF(path);
       const opponentUID = to === userUID ? from : to;
       update(gameRef, {
@@ -27,7 +29,6 @@ export const WordScreen = () => {
       })
         .then(() => {
           setGame((prev) => ({ ...prev, word: input }));
-          //
         })
         .catch((e) => console.log("rakip için kelime seçilirken problem:", e));
     }
@@ -71,14 +72,23 @@ export const WordScreen = () => {
         maxLength={length}
         onChangeText={(t) => setInput(t.toUpperCase())}
       />
-      <Button
-        mode="contained"
-        maxLength={length}
-        disabled={input.length != length}
-        onPress={onPressHandleWordInput}
-      >
-        Kelimeyi onayla
-      </Button>
+      {!isEntered ? (
+        <Button
+          mode="contained"
+          maxLength={length}
+          disabled={input.length != length}
+          onPress={onPressHandleWordInput}
+        >
+          Kelimeyi onayla
+        </Button>
+      ) : (
+        <View>
+          <Text>
+            Oyunun başlayabilmesi için iki tarafın da kelime girmesi gerekiyor
+          </Text>
+          <ActivityIndicator size="large" />
+        </View>
+      )}
     </View>
   );
 };
