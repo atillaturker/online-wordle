@@ -69,13 +69,13 @@ export const WordScreen = () => {
         mode="flat"
         keyboardType="default"
         value={input}
-        maxLength={length}
+        maxLength={+length}
         onChangeText={(t) => setInput(t.toUpperCase())}
       />
       {!isEntered ? (
         <Button
           mode="contained"
-          maxLength={+length}
+          maxLength={length}
           disabled={input.length != length}
           onPress={onPressHandleWordInput}
         >
