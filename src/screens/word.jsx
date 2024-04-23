@@ -75,7 +75,7 @@ export const WordScreen = () => {
       {!isEntered ? (
         <Button
           mode="contained"
-          maxLength={length}
+          maxLength={+length}
           disabled={input.length != length}
           onPress={onPressHandleWordInput}
         >
