@@ -1,18 +1,18 @@
 import { useNavigation } from "@react-navigation/native";
 import { useSetAtom } from "jotai";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Button } from "react-native-paper";
-import { modeConfigAtom } from "../../App";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import { GlobalState } from "../../App";
 import { MODES } from "../const";
 import { SCREENS } from "../navigation";
 
 export const ChannelSelectionScreen = () => {
-  const setModConfig = useSetAtom(modeConfigAtom);
+  const setGame = useSetAtom(GlobalState.game);
   const { navigate } = useNavigation();
 
   const handleMode = (mode) => {
-    setModConfig(mode);
+    setGame((prev) => ({ ...prev, mode }));
     navigate(SCREENS.number);
   };
 
@@ -20,12 +20,26 @@ export const ChannelSelectionScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Bir Oyun Modu Seçin</Text>
       <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={() => handleMode(MODES.rastgele)}>
-          Rastgele kelime
-        </Button>
-        <Button mode="contained" onPress={() => handleMode(MODES.belirli)}>
-          Belirli Kelime
-        </Button>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleMode(MODES.rastgele)}
+        >
+          <Text style={styles.buttonText}>{`Rastgele\nKelimeler`}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleMode(MODES.belirli)}
+        >
+          <Text style={styles.buttonText}>{`Belirli\nKelimeler`}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.infoText}>
+          Rastgele: Kelime oyun tarafından seçilir
+        </Text>
+        <Text style={styles.infoText}>
+          Belirli: Kelimeleri oyuncular rakipleri için seçer
+        </Text>
       </View>
     </View>
   );
@@ -35,15 +49,40 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    padding: 32,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    textAlign: "center",
     marginBottom: 20,
   },
   buttonContainer: {
-    gap: 8,
+    paddingTop: 48,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  button: {
+    width: "45%",
+    height: 160,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+    borderRadius: 16,
+  },
+  buttonText: {
+    fontSize: 24,
+    fontWeight: "800",
+    textAlign: "center",
+  },
+  infoContainer: {
+    paddingTop: 48,
+    width: "100%",
+
+    gap: 16,
+  },
+  infoText: {
+    fontSize: 18,
+    textDecorationLine: "underline",
   },
 });
