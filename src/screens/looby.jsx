@@ -1,7 +1,7 @@
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { onDisconnect, onValue, remove, update } from "firebase/database";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator, Button } from "react-native-paper";
 
@@ -9,6 +9,7 @@ import { GlobalState } from "../../App";
 import { FIREBASE_AUTH, GET_DB_REF } from "../../firebaseConfig";
 import { DialogModal } from "../components/dialog";
 import { SCREENS, STACKS } from "../navigation";
+import { getRandomWord } from "../words";
 
 export const LobbyScreen = () => {
   const isFocused = useIsFocused();
@@ -19,14 +20,7 @@ export const LobbyScreen = () => {
   const setGame = useSetAtom(GlobalState.game);
   const rootRef = `${mode}/${length}`;
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
-  const [randomWord] = useState(
-    {
-      4: "AAAA",
-      5: "AAAAA",
-      6: "AAAAAA",
-      7: "AAAAAAA",
-    }[length]
-  );
+  const randomWord = getRandomWord(length);
 
   const handleDisconnectOnBlur = () => {
     const unsub = navigation.addListener("beforeRemove", () => {
