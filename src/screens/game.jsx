@@ -13,8 +13,8 @@ import { SCREENS } from "../navigation";
 
 export const GameScreen = () => {
   const { navigate } = useNavigation();
-  const [game, setGame] = useAtom(GlobalState.game);
-  const { length, to, from, path, word } = game;
+  const [{ length, to, from, path }, setGame] = useAtom(GlobalState.game);
+  const [word, setWord] = useState("");
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
   const [countDown, setCountDown] = useState(0);
   const countDownRef = useRef();
@@ -24,16 +24,18 @@ export const GameScreen = () => {
 
   const opponentUID = userUID === to ? from : to;
 
+  console.log("wwww", word);
+
   const getWord = () => {
-    console.log("tekrar calisti");
     const wordPath = GET_DB_REF(`${path}/${userUID}/word`);
     onValue(wordPath, (data) => {
       if (data.exists()) {
-        console.log("data ne =", data.val());
-        setGame((prev) => ({ ...prev, word: data.val() }));
+        setWord(data.val());
+        // setGame((prev) => ({ ...prev, word: data.val() }));
       }
     });
   };
+
   const handleLose = () => {
     const gameRef = GET_DB_REF(`${path}`);
     update(gameRef, {
@@ -72,6 +74,7 @@ export const GameScreen = () => {
     setResult("playing");
     setGame((prev) => ({
       ...prev,
+      word,
       result,
     }));
     navigate(SCREENS.result);
@@ -94,7 +97,7 @@ export const GameScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (countDown === 60) {
+    if (countDown === 6000) {
       clearInterval(countDownRef.current);
       handleLose();
     }
@@ -102,6 +105,7 @@ export const GameScreen = () => {
 
   const renderItem = ({ _, index }) => (
     <Word
+      word={word}
       entered={step > index}
       disabled={step !== index}
       setInput={setInput}
