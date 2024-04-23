@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { onValue, remove, set, update } from "firebase/database";
+import { onValue, remove, update } from "firebase/database";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -53,14 +53,12 @@ export const LobbyScreen = () => {
       [uid]: {
         to: uid,
         from: userUID,
-        // from: uid,
-        // to: userUID,
       },
     })
       .then(() => {
         setReceivedInvite({ from: userUID, to: uid });
       })
-      .catch((e) => console.log("davet gönderirken problem:", e)); // revert
+      .catch((e) => console.log("davet gönderirken problem:", e));
   };
 
   const checkInvites = () => {
@@ -162,20 +160,10 @@ export const LobbyScreen = () => {
     }
   };
 
-  const xxx = () => {
-    set(GET_DB_REF(`${rootRef}/invites/EqenrBHOuPYvTupczD4LPpCvLq33`), {
-      to: "EqenrBHOuPYvTupczD4LPpCvLq33",
-      from: "a",
-    });
-  };
-
   useEffect(() => {
     addUserToUsers();
     getUsers();
     checkInvites();
-
-    ///
-    xxx();
   }, []);
 
   useEffect(() => {
