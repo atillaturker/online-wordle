@@ -12,7 +12,6 @@ export const Word = ({ disabled, entered, setInput, order }) => {
   const inputRefs = useRef([]);
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
   const [words, setWords] = useState([]);
-
   const getWords = () => {
     const wordRef = GET_DB_REF(`${path}/${userUID}/input/${order}`);
     try {

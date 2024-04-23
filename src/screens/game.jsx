@@ -3,7 +3,7 @@ import { onValue, update } from "firebase/database";
 import { useAtom } from "jotai";
 import React, { useEffect, useRef, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { Button } from "react-native-paper";
+import { ActivityIndicator, Button } from "react-native-paper";
 
 import { GlobalState } from "../../App";
 import { FIREBASE_AUTH, GET_DB_REF } from "../../firebaseConfig";
@@ -152,7 +152,11 @@ export const GameScreen = () => {
       <Text
       // style={styles.title}
       >{`${length - step} deneme hakkın kaldı`}</Text>
-      <FlatList data={Array.from({ length })} renderItem={renderItem} />
+      {word ? (
+        <FlatList data={Array.from({ length })} renderItem={renderItem} />
+      ) : (
+        <ActivityIndicator size="large" />
+      )}
       {/* {step < length && input.filter(Boolean).length == length && ( */}
       <Button onPress={handleOnPress} mode="contained">
         Onayla
