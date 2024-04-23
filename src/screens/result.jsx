@@ -7,7 +7,7 @@ import { Button } from "react-native-paper";
 
 import { GlobalState } from "../../App";
 import { FIREBASE_AUTH, GET_DB_REF } from "../../firebaseConfig";
-import { SCREENS, STACKS } from "../navigation";
+import { STACKS } from "../navigation";
 
 export const ResultScreen = () => {
   const navigation = useNavigation();
@@ -16,6 +16,7 @@ export const ResultScreen = () => {
   const [{ mode, length, to, from, path, word, result }, setGame] = useAtom(
     GlobalState.game
   );
+  const setIsLoggedIn = useSetAtom(GlobalState.isLoggedIn);
   const setInvite = useSetAtom(GlobalState.invite);
   const [isGameFinished, setIsGameFinished] = useState(false);
 
@@ -43,15 +44,19 @@ export const ResultScreen = () => {
     remove(gameRef)
       .catch((e) => console.log("oyun kapatılırken hata"))
       .then(() => {
-        setGame((prev) => ({ mode: prev.mode, length: prev.length }));
-        setInvite();
-
-        navigation.dispatch(
-          CommonActions.reset({
-            index: 1,
-            routes: [{ name: STACKS.looby }, { name: SCREENS.channel }],
-          })
-        );
+        const gameRef = GET_DB_REF(path);
+        remove(gameRef)
+          .catch((e) => console.log("oyun kapatılırken hata"))
+          .then(() => {
+            setGame((prev) => ({ mode: prev.mode, length: prev.length }));
+            setInvite();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: STACKS.looby }],
+              })
+            );
+          });
       });
   };
 
@@ -59,8 +64,6 @@ export const ResultScreen = () => {
     getSteps();
     countDown();
   }, []);
-
-  console.log(steps);
 
   return (
     <View>

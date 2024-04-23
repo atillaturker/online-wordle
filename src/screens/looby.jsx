@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import { onValue, remove, update } from "firebase/database";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { onDisconnect, onValue, remove, update } from "firebase/database";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
@@ -11,7 +11,8 @@ import { DialogModal } from "../components/dialog";
 import { SCREENS, STACKS } from "../navigation";
 
 export const LobbyScreen = () => {
-  const { navigate } = useNavigation();
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
   const { mode, length } = useAtomValue(GlobalState.game);
   const [users, setUsers] = useAtom(GlobalState.users);
   const [receivedInvite, setReceivedInvite] = useAtom(GlobalState.invite);
@@ -27,11 +28,29 @@ export const LobbyScreen = () => {
     }[length]
   );
 
+  const handleDisconnectOnBlur = () => {
+    const unsub = navigation.addListener("beforeRemove", () => {
+      const userRef = GET_DB_REF(`${rootRef}/users/${userUID}`);
+      remove(userRef).catch((e) => console.log("lobiden çıkarken problem:", e));
+    });
+
+    return unsub;
+  };
+
+  const handleDisconnect = () => {
+    const userRef = GET_DB_REF(`${rootRef}/users/${userUID}`);
+    onDisconnect(userRef)
+      .remove()
+      .catch((e) => console.log("lobiden çıkarken problem:", e));
+  };
+
   const addUserToUsers = () => {
-    const lobbyRef = GET_DB_REF(`${rootRef}/users/`);
-    update(lobbyRef, { [`${userUID}`]: userUID }).catch((e) =>
-      console.log("Kullanıcıyı lobiye eklerken bir problem:", e)
-    );
+    if (isFocused) {
+      const lobbyRef = GET_DB_REF(`${rootRef}/users/`);
+      update(lobbyRef, { [`${userUID}`]: userUID }).catch((e) =>
+        console.log("Kullanıcıyı lobiye eklerken bir problem:", e)
+      );
+    }
   };
 
   const getUsers = () => {
@@ -97,10 +116,10 @@ export const LobbyScreen = () => {
                   update(gameRef, {
                     [`${receivedInvite?.to}`]: {
                       [`${receivedInvite.to}`]: {
-                        word: randomWord,
+                        word: mode === "rastgele" ? randomWord : "",
                       },
                       [`${receivedInvite.from}`]: {
-                        word: randomWord,
+                        word: mode === "rastgele" ? randomWord : "",
                       },
                     },
                   }).catch((e) =>
@@ -147,10 +166,10 @@ export const LobbyScreen = () => {
             to: receivedInvite.to,
             from: receivedInvite.from,
             path: `${rootRef}/games/${receivedInvite?.to}`,
-            word: randomWord,
+            word: mode === "rastgele" ? randomWord : "",
           });
           setReceivedInvite();
-          navigate(STACKS.game, {
+          navigation.navigate(STACKS.game, {
             screen: mode === "rastgele" ? SCREENS.game : SCREENS.word,
           });
         }
@@ -164,6 +183,11 @@ export const LobbyScreen = () => {
     addUserToUsers();
     getUsers();
     checkInvites();
+    handleDisconnect();
+    const unsub = handleDisconnectOnBlur();
+    return () => {
+      unsub();
+    };
   }, []);
 
   useEffect(() => {

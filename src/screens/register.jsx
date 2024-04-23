@@ -1,6 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
 import React, { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 import { Button, TextInput, Title } from "react-native-paper";
@@ -35,9 +34,6 @@ export const RegisterScreen = ({}) => {
           onPress: () => navigate(SCREENS.signin),
         },
       ]);
-
-      const db = getDatabase();
-      set(ref(db, "users/" + userData.userId), userData);
     } catch (error) {
       Alert.alert("Hata", `${error} Lütfen tekrar deneyiniz. `);
     } finally {

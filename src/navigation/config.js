@@ -3,7 +3,7 @@ export const SCREENS = {
   register: "Register",
   welcome: "Welcome",
   homepage: "Homepage",
-  lobby: "Lobby",
+  lobby: "Lobby1",
   settings1: "Settings1",
   settings2: "Settings2",
   channel: "ChannelSelection",

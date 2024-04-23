@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import { update } from "firebase/database";
 import { useAtomValue } from "jotai";
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 
 import { GlobalState } from "../../App";
@@ -18,9 +18,9 @@ export const WordScreen = () => {
   const onPressHandleWordInput = () => {
     if (input) {
       const gameRef = GET_DB_REF(path);
-      const opponent = to === userUID ? from : to;
+      const opponentUID = to === userUID ? from : to;
       update(gameRef, {
-        [`${opponent}`]: {
+        [`${opponentUID}`]: {
           word: input,
         },
       })
@@ -32,18 +32,21 @@ export const WordScreen = () => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text>
         {`Oyuna başlamadan önce rakibinin bilmesi için ${length} harfli bir kelime gir`}
       </Text>
       <TextInput
         mode="flat"
         keyboardType="default"
+        value={input}
         maxLength={length}
-        onChangeText={setInput}
+        onChangeText={(t) => setInput(t.toUpperCase())}
       />
       <Button
-        disabled={input.length !== length}
+        mode="contained"
+        maxLength={length}
+        disabled={input.length != length}
         onPress={onPressHandleWordInput}
       >
         Kelimeyi onayla
@@ -51,3 +54,15 @@ export const WordScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 32,
+    gap: 32,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+});
