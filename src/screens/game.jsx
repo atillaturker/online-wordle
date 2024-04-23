@@ -24,8 +24,6 @@ export const GameScreen = () => {
 
   const opponentUID = userUID === to ? from : to;
 
-  console.log("wwww", word);
-
   const getWord = () => {
     const wordPath = GET_DB_REF(`${path}/${userUID}/word`);
     onValue(wordPath, (data) => {
@@ -97,7 +95,7 @@ export const GameScreen = () => {
   }, []);
 
   useEffect(() => {
-    if (countDown === 6000) {
+    if (countDown === 60) {
       clearInterval(countDownRef.current);
       handleLose();
     }

@@ -42,13 +42,18 @@ export const Word = ({ disabled, entered, setInput, order, word }) => {
   };
 
   const renderItem = ({ _, index }) => {
-    const correntInputStyle = {
-      backgroundColor: words[index] === word[index] ? "green" : "white",
+    const correctInputStyle = {
+      backgroundColor:
+        words[index] === word[index]
+          ? "green"
+          : word.split("").includes(words[index])
+            ? "yellow"
+            : "white",
     };
     return (
       <View style={styles.box}>
         <TextInput
-          style={[styles.textInput, entered && correntInputStyle]}
+          style={[styles.textInput, entered && correctInputStyle]}
           disabled={disabled}
           keyboardType="default"
           maxLength={1}
@@ -85,7 +90,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#000000",
-    backgroundColor: "#000",
   },
   textInput: {
     fontSize: 24,
