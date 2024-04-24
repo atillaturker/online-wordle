@@ -13,26 +13,23 @@ import { SCREENS } from "../navigation";
 
 export const GameScreen = () => {
   const { navigate } = useNavigation();
-  const [{ mode, length, to, from, path, word }, setGame] = useAtom(
-    GlobalState.game
-  );
+  const [{ length, to, from, path }, setGame] = useAtom(GlobalState.game);
+  const [word, setWord] = useState("");
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
   const [countDown, setCountDown] = useState(0);
   const countDownRef = useRef();
-  const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(0);
   const [input, setInput] = useState(Array.from({ length }).fill(""));
   const [result, setResult] = useState("playing");
 
   const opponentUID = userUID === to ? from : to;
 
-  const checkOpponentWordForSpecific = () => {
-    setIsLoading(true);
-    const opponentPath = userUID === to ? from : to;
-    const opponentWordRef = GET_DB_REF(`${path}/${opponentPath}`);
-    onValue(opponentWordRef, (data) => {
-      if (data.exists() && data.val()["word"] !== "") {
-        setIsLoading(false);
+  const getWord = () => {
+    const wordPath = GET_DB_REF(`${path}/${userUID}/word`);
+    onValue(wordPath, (data) => {
+      if (data.exists()) {
+        setWord(data.val());
+        // setGame((prev) => ({ ...prev, word: data.val() }));
       }
     });
   };
@@ -75,17 +72,16 @@ export const GameScreen = () => {
     setResult("playing");
     setGame((prev) => ({
       ...prev,
+      word,
       result,
     }));
     navigate(SCREENS.result);
   };
 
   useEffect(() => {
-    if (mode === "belirli") {
-      checkOpponentWordForSpecific();
-    }
     checkWin();
     checkLost();
+    getWord();
   }, []);
 
   useEffect(() => {
@@ -107,6 +103,7 @@ export const GameScreen = () => {
 
   const renderItem = ({ _, index }) => (
     <Word
+      word={word}
       entered={step > index}
       disabled={step !== index}
       setInput={setInput}
@@ -133,41 +130,35 @@ export const GameScreen = () => {
 
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <>
-          <Text style={styles.title}>Rakibinin kelime girmesi bekleniyor</Text>
-          <ActivityIndicator size="large" />
-        </>
-      ) : (
-        <>
-          {result !== "playing" && (
-            <DialogModal
-              isVisible={result !== "playing"}
-              title={result === "win" ? "Kazandın" : "Kaybettin"}
-              dismissable={false}
-              text={result === "win" ? "Tebrikler" : "Üzgünüm"}
-              done={{
-                text: "Tamam",
-                onPress: terminateGame,
-              }}
-            />
-          )}
-          {countDown > 50 && (
-            <Text
-            // style={styles.title}
-            >{`Çabuk ol ${60 - countDown} saniye sonra kaybedeceksin`}</Text>
-          )}
-          <Text
-          // style={styles.title}
-          >{`${length - step} deneme hakkın kaldı`}</Text>
-          <FlatList data={Array.from({ length })} renderItem={renderItem} />
-          {/* {step < length && input.filter(Boolean).length == length && ( */}
-          <Button onPress={handleOnPress} mode="contained">
-            Onayla
-          </Button>
-          {/* )} */}
-        </>
+      {result !== "playing" && (
+        <DialogModal
+          isVisible={result !== "playing"}
+          title={result === "win" ? "Kazandın" : "Kaybettin"}
+          dismissable={false}
+          text={result === "win" ? "Tebrikler" : "Üzgünüm"}
+          done={{
+            text: "Tamam",
+            onPress: terminateGame,
+          }}
+        />
       )}
+      {countDown > 50 && (
+        <Text
+        // style={styles.title}
+        >{`Çabuk ol ${60 - countDown} saniye sonra kaybedeceksin`}</Text>
+      )}
+      <Text
+      // style={styles.title}
+      >{`${length - step} deneme hakkın kaldı`}</Text>
+      {word ? (
+        <FlatList data={Array.from({ length })} renderItem={renderItem} />
+      ) : (
+        <ActivityIndicator size="large" />
+      )}
+      {/* {step < length && input.filter(Boolean).length == length && ( */}
+      <Button onPress={handleOnPress} mode="contained">
+        Onayla
+      </Button>
     </View>
   );
 };
