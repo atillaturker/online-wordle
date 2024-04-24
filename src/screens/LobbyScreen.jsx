@@ -2,14 +2,14 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { onDisconnect, onValue, remove, update } from "firebase/database";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import React, { useEffect } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { ActivityIndicator, Button } from "react-native-paper";
-
 import { GlobalState } from "../../App";
 import { FIREBASE_AUTH, GET_DB_REF } from "../../firebaseConfig";
 import { DialogModal } from "../components/dialog";
 import { SCREENS, STACKS } from "../navigation";
 import { getRandomWord } from "../words";
+import { styles } from "./looby";
 
 export const LobbyScreen = () => {
   const isFocused = useIsFocused();
@@ -215,9 +215,8 @@ export const LobbyScreen = () => {
           }}
         />
       )}
-      <Text
-        style={styles.title}
-      >{`Oyun Modu: ${mode.replace(/^\w/, (c) => c.toUpperCase())} Kelime ${length} Harf`}</Text>
+      <Text style={styles.title}>{`${mode} Kelime\n${length} Harf`}</Text>{" "}
+      //make the mode string to uppercase //make the mode string to uppercase
       {!!users?.length && (
         <Text
           style={styles.status}
@@ -242,39 +241,3 @@ export const LobbyScreen = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 32,
-  },
-  title: {
-    fontSize: 23,
-    fontWeight: "bold",
-    marginBottom: 40,
-  },
-  status: {
-    fontSize: 23,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  usersContainer: {
-    gap: 8,
-    flex: 1,
-    width: "100%",
-    paddingTop: 48,
-  },
-  userContainer: {
-    flexDirection: "row",
-    gap: 8,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-  },
-  userText: {
-    flex: 1,
-    fontSize: 24,
-  },
-});
