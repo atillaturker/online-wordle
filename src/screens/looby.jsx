@@ -1,7 +1,7 @@
-import { useNavigation } from "@react-navigation/native";
-import { onValue, remove, update } from "firebase/database";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { onDisconnect, onValue, remove, update } from "firebase/database";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator, Button } from "react-native-paper";
 
@@ -9,29 +9,41 @@ import { GlobalState } from "../../App";
 import { FIREBASE_AUTH, GET_DB_REF } from "../../firebaseConfig";
 import { DialogModal } from "../components/dialog";
 import { SCREENS, STACKS } from "../navigation";
+import { getRandomWord } from "../words";
 
 export const LobbyScreen = () => {
-  const { navigate } = useNavigation();
+  const isFocused = useIsFocused();
+  const navigation = useNavigation();
   const { mode, length } = useAtomValue(GlobalState.game);
   const [users, setUsers] = useAtom(GlobalState.users);
   const [receivedInvite, setReceivedInvite] = useAtom(GlobalState.invite);
   const setGame = useSetAtom(GlobalState.game);
   const rootRef = `${mode}/${length}`;
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
-  const [randomWord] = useState(
-    {
-      4: "AAAA",
-      5: "AAAAA",
-      6: "AAAAAA",
-      7: "AAAAAAA",
-    }[length]
-  );
+
+  const handleDisconnectOnBlur = () => {
+    const unsub = navigation.addListener("beforeRemove", () => {
+      const userRef = GET_DB_REF(`${rootRef}/users/${userUID}`);
+      remove(userRef).catch((e) => console.log("lobiden çıkarken problem:", e));
+    });
+
+    return unsub;
+  };
+
+  const handleDisconnect = () => {
+    const userRef = GET_DB_REF(`${rootRef}/users/${userUID}`);
+    onDisconnect(userRef)
+      .remove()
+      .catch((e) => console.log("lobiden çıkarken problem:", e));
+  };
 
   const addUserToUsers = () => {
-    const lobbyRef = GET_DB_REF(`${rootRef}/users/`);
-    update(lobbyRef, { [`${userUID}`]: userUID }).catch((e) =>
-      console.log("Kullanıcıyı lobiye eklerken bir problem:", e)
-    );
+    if (isFocused) {
+      const lobbyRef = GET_DB_REF(`${rootRef}/users/`);
+      update(lobbyRef, { [`${userUID}`]: userUID }).catch((e) =>
+        console.log("Kullanıcıyı lobiye eklerken bir problem:", e)
+      );
+    }
   };
 
   const getUsers = () => {
@@ -94,13 +106,14 @@ export const LobbyScreen = () => {
               remove(userFromRef)
                 .then(() => {
                   const gameRef = GET_DB_REF(`${rootRef}/games/`);
+                  const randomWord = getRandomWord(length);
                   update(gameRef, {
                     [`${receivedInvite?.to}`]: {
                       [`${receivedInvite.to}`]: {
-                        word: randomWord,
+                        word: mode === "rastgele" ? randomWord : "",
                       },
                       [`${receivedInvite.from}`]: {
-                        word: randomWord,
+                        word: mode === "rastgele" ? randomWord : "",
                       },
                     },
                   }).catch((e) =>
@@ -147,10 +160,9 @@ export const LobbyScreen = () => {
             to: receivedInvite.to,
             from: receivedInvite.from,
             path: `${rootRef}/games/${receivedInvite?.to}`,
-            word: randomWord,
           });
           setReceivedInvite();
-          navigate(STACKS.game, {
+          navigation.navigate(STACKS.game, {
             screen: mode === "rastgele" ? SCREENS.game : SCREENS.word,
           });
         }
@@ -164,6 +176,11 @@ export const LobbyScreen = () => {
     addUserToUsers();
     getUsers();
     checkInvites();
+    handleDisconnect();
+    const unsub = handleDisconnectOnBlur();
+    return () => {
+      unsub();
+    };
   }, []);
 
   useEffect(() => {
@@ -198,9 +215,13 @@ export const LobbyScreen = () => {
           }}
         />
       )}
-      <Text style={styles.title}>{`${mode} kelime\n${length} harf`}</Text>
+      <Text
+        style={styles.title}
+      >{`Oyun Modu: ${mode.replace(/^\w/, (c) => c.toUpperCase())} Kelime ${length} Harf`}</Text>
       {!!users?.length && (
-        <Text style={styles.status}>{`${users?.length} aktif kullanıcı`}</Text>
+        <Text
+          style={styles.status}
+        >{`Aktif Oyuncu sayısı :${users?.length} `}</Text>
       )}
       {users?.length ? (
         <View style={styles.usersContainer}>
@@ -227,12 +248,12 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   title: {
-    fontSize: 24,
+    fontSize: 23,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 40,
   },
   status: {
-    fontSize: 24,
+    fontSize: 23,
     fontWeight: "bold",
     marginBottom: 20,
   },

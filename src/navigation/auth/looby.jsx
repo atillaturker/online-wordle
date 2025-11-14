@@ -13,7 +13,7 @@ const lobbyStack = createNativeStackNavigator();
 
 export const LobbyNavigation = () => {
   return (
-    <lobbyStack.Navigator>
+    <lobbyStack.Navigator initialRouteName={SCREENS.channel}>
       <lobbyStack.Screen
         name={SCREENS.channel}
         component={ChannelSelectionScreen} // Render the ChannelSelectionScreen component

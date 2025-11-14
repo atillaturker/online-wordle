@@ -7,12 +7,11 @@ import { TextInput } from "react-native-paper";
 import { GlobalState } from "../../App";
 import { FIREBASE_AUTH, GET_DB_REF } from "../../firebaseConfig";
 
-export const Word = ({ disabled, entered, setInput, order }) => {
-  const { length, path, word } = useAtomValue(GlobalState.game);
+export const Word = ({ disabled, entered, setInput, order, word }) => {
+  const { length, path } = useAtomValue(GlobalState.game);
   const inputRefs = useRef([]);
   const userUID = FIREBASE_AUTH?.currentUser?.uid;
   const [words, setWords] = useState([]);
-
   const getWords = () => {
     const wordRef = GET_DB_REF(`${path}/${userUID}/input/${order}`);
     try {
@@ -43,13 +42,18 @@ export const Word = ({ disabled, entered, setInput, order }) => {
   };
 
   const renderItem = ({ _, index }) => {
-    const correntInputStyle = {
-      backgroundColor: words[index] === word[index] ? "green" : "white",
+    const correctInputStyle = {
+      backgroundColor:
+        words[index] === word[index]
+          ? "green"
+          : word.split("").includes(words[index])
+            ? "yellow"
+            : "white",
     };
     return (
       <View style={styles.box}>
         <TextInput
-          style={[styles.textInput, entered && correntInputStyle]}
+          style={[styles.textInput, entered && correctInputStyle]}
           disabled={disabled}
           keyboardType="default"
           maxLength={1}

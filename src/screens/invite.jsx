@@ -1,11 +1,12 @@
+import { useAtomValue } from "jotai";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 
-import { useSendInvite } from "../hooks";
+import { GlobalState } from "../../App";
 
 export const InviteScreen = () => {
-  const { from, to, mode, length } = useSendInvite();
+  const { from, to, mode, length } = useAtomValue(GlobalState.game);
 
   return (
     <View style={styles.container}>
